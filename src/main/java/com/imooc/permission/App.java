@@ -1,5 +1,7 @@
 package com.imooc.permission;
 
+import com.imooc.permission.entity.SysUser;
+import com.imooc.permission.util.BeanValidateUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,9 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @SpringBootApplication
 @MapperScan(basePackages = "com.imooc.permission.dao")
+@RequestMapping("hello")
+@RestController
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
+    }
+
+    @RequestMapping
+    public Object heelo(){
+        return BeanValidateUtil.validate(new SysUser());
     }
 
 }

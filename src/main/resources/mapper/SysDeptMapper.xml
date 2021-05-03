@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.permission.dao.SysDeptMapper">
+
+    <update id="updateAllSonLevelByLevel">
+        UPDATE SYS_DEPT
+        SET LEVEL = #{afterLevel} + SUBSTR(LEVEL FROM LENGTH(#{beforeLevel}) +1)
+        WHERE POSITION(#{beforeLevel} IN LEVEL) = 1
+    </update>
+</mapper>

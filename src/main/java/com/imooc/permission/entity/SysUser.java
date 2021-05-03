@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,6 +22,7 @@ public class SysUser implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
     @TableField
+    @NotNull
     private String username;
     @TableField
     private String telephone;

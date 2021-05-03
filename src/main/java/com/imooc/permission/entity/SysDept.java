@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +21,9 @@ import java.util.Date;
  */
 @TableName("sys_dept")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SysDept implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer id;
