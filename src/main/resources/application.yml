@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /permission
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/permission?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
