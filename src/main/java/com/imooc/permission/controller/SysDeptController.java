@@ -8,18 +8,15 @@ import com.imooc.permission.entity.dto.SysDeptDto;
 import com.imooc.permission.entity.param.DeptParam;
 import com.imooc.permission.serivce.SysDeptService;
 import com.imooc.permission.util.BeanValidateUtil;
+import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
+import com.imooc.permission.util.RequestUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Lesleey
@@ -48,11 +45,20 @@ public class SysDeptController {
             sysDept.setLevel(LevelUtil.calculateLevel(null, null));
         else
             sysDept.setLevel(LevelUtil.calculateLevel(parentDept.getLevel(), parentDept.getId()));
+        sysDept.setOperateTime(new Date());
+        sysDept.setOperateIp(RequestUtil.getRemoteAddr());
+        sysDept.setOperator(ContextUtil.loginUser().getUsername());
         //todo 操作人
         sysDeptService.save(sysDept);
         return ResponseData.success(true);
     }
 
+    /**
+     *   更新部门
+     *
+     * @param deptParam
+     * @return
+     */
     @PostMapping("update")
     public ResponseData<Boolean> update(DeptParam deptParam){
         try{
@@ -61,12 +67,24 @@ public class SysDeptController {
             SysDept sysDept = SysDept.builder().id(deptParam.getId()).name(deptParam.getName()).parentId(deptParam.getParentId())
                     .seq(deptParam.getSeq()).remark(deptParam.getRemark()).build();
             sysDeptService.updateSysDept(sysDept);
+            return ResponseData.success(true);
         }catch (Exception e){
-            throw e;
+            e.printStackTrace();
+            return ResponseData.error(e.getMessage());
         }
-        return null;
     }
 
+    @GetMapping("delete/{deptId}")
+    public ResponseData<Boolean> removeDept(@PathVariable Integer deptId){
+        try{
+            if(sysDeptService.count(new QueryWrapper<SysDept>().lambda().eq(SysDept::getParentId, deptId)) > 0)
+                throw new RuntimeException("该部门存在子部门，请先移除子部门");
+            sysDeptService.removeById(deptId);
+            return ResponseData.success(true);
+        }catch(Exception e){
+            return ResponseData.error(e.getMessage());
+        }
+    }
 
     /**
      *  查询部门树
@@ -86,7 +104,7 @@ public class SysDeptController {
                 if(StringUtils.equalsIgnoreCase(sysDept.getLevel(), LevelUtil.ROOT))
                     rootList.add(curSysDept);
                 else
-                    treeMap.get(curSysDept.getParentId()).getSons().add(curSysDept);
+                    treeMap.get(curSysDept.getParentId()).getDeptList().add(curSysDept);
             });
 
         }

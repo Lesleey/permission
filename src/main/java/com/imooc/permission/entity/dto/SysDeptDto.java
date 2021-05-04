@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class SysDeptDto  extends SysDept {
 
-    private List<SysDeptDto> sons = new ArrayList<>(0);
+    private List<SysDeptDto> deptList = new ArrayList<>(0);
 
     public static SysDeptDto adapt(SysDept sysDept){
         SysDeptDto sysDeptDto = new SysDeptDto();

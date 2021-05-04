@@ -1,7 +1,9 @@
 server:
   port: 8080
   servlet:
-    context-path: /permission
+    jsp:
+      init-parameters:
+        development: true
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
@@ -10,5 +12,7 @@ spring:
     password: 123456
   mvc:
     view:
-      prefix: /WEB-INFO/views
+      prefix: /WEB-INFO/
       suffix: .jsp
+user:
+  initPassword: 123456

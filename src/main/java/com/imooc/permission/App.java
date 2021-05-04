@@ -1,10 +1,9 @@
 package com.imooc.permission;
 
-import com.imooc.permission.entity.SysUser;
-import com.imooc.permission.util.BeanValidateUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,8 +22,10 @@ public class App {
     }
 
     @RequestMapping
-    public Object heelo(){
-        return BeanValidateUtil.validate(new SysUser());
+    public String heelo(){
+        ClassPathResource classPathResource = new ClassPathResource("WEB-INFO/demo.jsp");
+        System.out.println(classPathResource.exists());
+        return "index";
     }
 
 }

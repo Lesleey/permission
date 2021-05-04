@@ -9,12 +9,15 @@ import com.imooc.permission.entity.SysAcl;
 import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.serivce.SysAclService;
 import com.imooc.permission.serivce.SysDeptService;
+import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
+import com.imooc.permission.util.RequestUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +44,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
             updateAllSonLevelByLevel(oldDept.getLevel() + LevelUtil.SEPARATOR + sysDept.getId(),
                     sysDept.getLevel() + LevelUtil.SEPARATOR + sysDept.getId());
         }
+        sysDept.setOperateTime(new Date());
+        sysDept.setOperateIp(RequestUtil.getRemoteAddr());
+        sysDept.setOperator(ContextUtil.loginUser().getUsername());
         return updateById(sysDept);
     }
 
