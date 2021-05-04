@@ -5,6 +5,8 @@ import com.imooc.permission.entity.SysDept;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author Lesleey
  * @date 2021/5/3-17:56
@@ -20,4 +22,10 @@ public interface SysDeptMapper  extends BaseMapper<SysDept> {
      * @return
      */
     Integer updateAllSonLevelByLevel(@Param("beforeLevel") String beforeLevel,@Param("afterLevel") String afterLevel);
+
+    /**
+     *  查询所有的部门 按照层级、序号排序
+     * @return
+     */
+    List<SysDept> listOrderByLevelAndSn();
 }

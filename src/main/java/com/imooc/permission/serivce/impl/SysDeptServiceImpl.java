@@ -14,6 +14,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
  implements SysDeptService {
     @Override
     public boolean updateSysDept(SysDept sysDept) {
-        SysDept oldDept = baseMapper.selectById(sysDept);
+        SysDept oldDept = baseMapper.selectById(sysDept.getId());
         if(oldDept == null)
             throw new RuntimeException("部门更改参数异常，请稍后重试！");
         if(sysDept.getParentId() != oldDept.getParentId()) {
@@ -37,7 +38,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
             else
                 sysDept.setLevel(LevelUtil.calculateLevel(parentDept.getLevel(), parentDept.getId()));
             //updateSonLevel(sysDept.getLevel(), sysDept.getId());
-            updateAllSonLevelByLevel(oldDept.getLevel(), sysDept.getLevel());
+            updateAllSonLevelByLevel(oldDept.getLevel() + LevelUtil.SEPARATOR + sysDept.getId(),
+                    sysDept.getLevel() + LevelUtil.SEPARATOR + sysDept.getId());
         }
         return updateById(sysDept);
     }
@@ -45,6 +47,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
     @Override
     public List<SysDept> listDirectSonByParentId(Integer parentId) {
         return baseMapper.selectList(new QueryWrapper<SysDept>().lambda().eq(SysDept::getParentId, parentId));
+    }
+
+    @Override
+    public List<SysDept> listOrderByLevelAndSn() {
+        List<SysDept> sysDepts = baseMapper.listOrderByLevelAndSn();
+        if(sysDepts == null)
+            sysDepts = Collections.emptyList();
+        return sysDepts;
     }
 
     /**

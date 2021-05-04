@@ -4,7 +4,12 @@
 
     <update id="updateAllSonLevelByLevel">
         UPDATE SYS_DEPT
-        SET LEVEL = #{afterLevel} + SUBSTR(LEVEL FROM LENGTH(#{beforeLevel}) +1)
+        SET LEVEL = CONCAT(#{afterLevel} , SUBSTR(LEVEL FROM LENGTH(#{beforeLevel}) +1))
         WHERE POSITION(#{beforeLevel} IN LEVEL) = 1
     </update>
+
+    <select id="listOrderByLevelAndSn" resultType="com.imooc.permission.entity.SysDept">
+        SELECT * FROM SYS_DEPT
+        ORDER BY LENGTH(REPLACE(LEVEL, '.', '')) ASC, SEQ ASC
+    </select>
 </mapper>

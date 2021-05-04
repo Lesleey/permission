@@ -36,6 +36,8 @@ public class SysDept implements Serializable {
     @TableField
     private Integer seq;
     @TableField
+    private String remark;
+    @TableField
     private String operator;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField

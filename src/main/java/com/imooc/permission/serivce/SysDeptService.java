@@ -26,4 +26,10 @@ public interface SysDeptService extends IService<SysDept> {
      * @return
      */
     List<SysDept>  listDirectSonByParentId(Integer parentId);
+
+    /**
+     *  查询所有的部门，按照层级和序号排序
+     * @return
+     */
+    List<SysDept> listOrderByLevelAndSn();
 }

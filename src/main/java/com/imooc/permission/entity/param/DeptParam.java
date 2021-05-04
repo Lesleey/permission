@@ -19,4 +19,6 @@ public class DeptParam implements Serializable {
     private String name;
     @NotNull(message = "序号不能为空！")
     private Integer seq;
+
+    private String remark;
 }

@@ -41,7 +41,8 @@ public class SysDeptController {
     public ResponseData<Boolean> save(DeptParam deptParam){
         BeanValidateUtil.validate(deptParam);
         validateDeptName(deptParam.getParentId(), deptParam.getName());
-        SysDept sysDept = SysDept.builder().name(deptParam.getName()).parentId(deptParam.getParentId()).seq(deptParam.getSeq()).build();
+        SysDept sysDept = SysDept.builder().name(deptParam.getName()).parentId(deptParam.getParentId()).seq(deptParam.getSeq())
+                .remark(deptParam.getRemark()).build();
         SysDept parentDept = sysDeptService.getById(sysDept.getParentId());
         if(parentDept == null)
             sysDept.setLevel(LevelUtil.calculateLevel(null, null));
@@ -57,7 +58,8 @@ public class SysDeptController {
         try{
             BeanValidateUtil.validate(deptParam);
             validateDeptName(deptParam.getParentId(), deptParam.getName());
-            SysDept sysDept = SysDept.builder().name(deptParam.getName()).parentId(deptParam.getParentId()).seq(deptParam.getSeq()).build();
+            SysDept sysDept = SysDept.builder().id(deptParam.getId()).name(deptParam.getName()).parentId(deptParam.getParentId())
+                    .seq(deptParam.getSeq()).remark(deptParam.getRemark()).build();
             sysDeptService.updateSysDept(sysDept);
         }catch (Exception e){
             throw e;
@@ -72,8 +74,9 @@ public class SysDeptController {
      */
     @GetMapping("deptTree")
     public ResponseData<List<SysDeptDto>> deptTree(){
-        List<SysDept> list = sysDeptService.list(new QueryWrapper<SysDept>().lambda()
-                .orderByAsc(sysDept -> sysDept.getLevel().split(LevelUtil.SEPARATOR).length).orderByAsc(SysDept::getSeq));
+        List<SysDept> list = sysDeptService.listOrderByLevelAndSn();
+        /*List<SysDept> list = sysDeptService.list(new QueryWrapper<SysDept>().lambda()
+                .orderByAsc(sysDept -> sysDept.getLevel().split(LevelUtil.SEPARATOR).length).orderByAsc(SysDept::getSeq));*/
         List<SysDeptDto> rootList = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(list)) {
             Map<Integer, SysDeptDto> treeMap = new HashMap<>();
@@ -81,7 +84,7 @@ public class SysDeptController {
                 SysDeptDto curSysDept = SysDeptDto.adapt(sysDept);
                 treeMap.put(curSysDept.getId(), curSysDept);
                 if(StringUtils.equalsIgnoreCase(sysDept.getLevel(), LevelUtil.ROOT))
-                    rootList.add(SysDeptDto.adapt(sysDept));
+                    rootList.add(curSysDept);
                 else
                     treeMap.get(curSysDept.getParentId()).getSons().add(curSysDept);
             });
