@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.permission.dao.SysAclModuleMapper">
+
+    <update id="updateAllSonLevelByLevel">
+        UPDATE SYS_ACL_MODULE
+        SET LEVEL = CONCAT(#{afterLevel} , SUBSTR(LEVEL FROM LENGTH(#{beforeLevel}) +1))
+        WHERE POSITION(#{beforeLevel} IN LEVEL) = 1
+    </update>
+
+    <select id="listOrderByLevelAndSn" resultType="com.imooc.permission.entity.SysAclModule">
+        SELECT * FROM SYS_ACL_MODULE
+        ORDER BY LENGTH(REPLACE(LEVEL, '.', '')) ASC, SEQ ASC
+    </select>
+</mapper>

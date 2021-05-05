@@ -234,12 +234,12 @@
 
         function loadAclModuleTree() {
             $.ajax({
-                url: "/sys/aclModule/tree.json",
+                url: "/sys/aclModule/aclModuleTree",
                 success : function (result) {
-                    if(result.ret) {
+                    if(result.code == 200) {
                         aclModuleList = result.data;
                         var rendered = Mustache.render(aclModuleListTemplate, {
-                            aclModuleList: result.data,
+                            aclModuleList: aclModuleList,
                             "showDownAngle": function () {
                                 return function (text, render) {
                                     return (this.aclModuleList && this.aclModuleList.length > 0) ? "" : "hidden";
@@ -250,7 +250,7 @@
                             }
                         });
                         $("#aclModuleList").html(rendered);
-                        recursiveRenderAclModule(result.data);
+                        recursiveRenderAclModule(aclModuleList);
                         bindAclModuleClick();
                     } else {
                         showMessage("加载权限模块", result.msg, false);

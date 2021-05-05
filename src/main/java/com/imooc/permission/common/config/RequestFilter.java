@@ -1,12 +1,11 @@
 package com.imooc.permission.common.config;
 
+import com.alibaba.druid.util.StringUtils;
 import com.imooc.permission.entity.SysUser;
 import com.imooc.permission.util.ContextUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +28,8 @@ public class RequestFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String servletPath = request.getServletPath();
         ContextUtil.add((SysUser) request.getSession().getAttribute("user"));
-        if(servletPath.contains(".") || pathMatcher.match("/user/login/", servletPath) || ContextUtil.loginUser() != null) {
+        if((servletPath.contains(".")  && !servletPath.endsWith("jsp") )|| pathMatcher.match(servletPath, "/signin.jsp")
+                || pathMatcher.match("/user/login", servletPath) || ContextUtil.loginUser() != null) {
             filterChain.doFilter(servletRequest, servletResponse);
             ContextUtil.remove();
         }else{
