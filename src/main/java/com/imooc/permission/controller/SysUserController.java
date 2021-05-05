@@ -1,7 +1,8 @@
 package com.imooc.permission.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.imooc.permission.UserConfig;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.imooc.permission.common.config.UserConfig;
 import com.imooc.permission.common.ResponseData;
 import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.entity.SysUser;
@@ -11,12 +12,10 @@ import com.imooc.permission.serivce.SysUserService;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.RequestUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -39,6 +38,15 @@ public class SysUserController {
     private SysDeptService sysDeptService;
 
 
+    @GetMapping("/page/{deptId}")
+    public ResponseData<Page<SysUser>> page(Integer pageNo, Integer pageSize, @PathVariable Integer deptId){
+        try{
+            Page<SysUser> pages = sysUserService.listPage(pageNo, pageSize, deptId);
+            return ResponseData.success(pages);
+        }catch (Exception e){
+            return ResponseData.error(e.getMessage());
+        }
+    }
 
     /**
      *   新增用户
@@ -46,14 +54,14 @@ public class SysUserController {
      * @return
      */
     @PostMapping("save")
-    public ResponseData<Boolean> saveUser(@RequestBody UserParam userParam){
+    public ResponseData<Boolean> saveUser(UserParam userParam){
         try{
             BeanValidateUtil.validate(userParam);
             validEmailExist(userParam.getMail());
             validTeleExist(userParam.getTelephone());
             validDeptExist(userParam.getDeptId());
             SysUser sysUser = SysUser.builder().deptId(userParam.getDeptId()).mail(userParam.getMail())
-                    .username(userParam.getUsername()).password(Md5Crypt.md5Crypt(userConfig.getInitPassword().getBytes())).remark(userParam.getRemark())
+                    .username(userParam.getUsername()).password(DigestUtils.md5Hex(userConfig.getInitPassword())).remark(userParam.getRemark())
                     .telephone(userParam.getTelephone()).status(userParam.getStatus())
                     .build();
             sysUser.setOperateTime(new Date());
@@ -73,7 +81,7 @@ public class SysUserController {
      * @return
      */
     @PostMapping("update")
-    public ResponseData<Boolean> updateUser(@RequestBody UserParam userParam){
+    public ResponseData<Boolean> updateUser(UserParam userParam){
         try{
             BeanValidateUtil.validate(userParam);
             validEmailExist(userParam.getMail());
@@ -91,6 +99,11 @@ public class SysUserController {
         }catch (Exception e){
             return ResponseData.error(e.getMessage());
         }
+    }
+
+    @GetMapping("info/{id}")
+    public ResponseData<SysUser> info(@PathVariable Integer id){
+        return ResponseData.success(sysUserService.getById(id));
     }
 
 

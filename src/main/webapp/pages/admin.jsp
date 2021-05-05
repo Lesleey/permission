@@ -1,5 +1,5 @@
-<%@ page import="com.mmall.common.RequestHolder" %>
-<%@ page import="com.mmall.model.SysUser" %>
+<%--<%@ page import="com.mmall.common.RequestHolder" %>--%>
+<%@ page import="com.imooc.permission.entity.SysUser" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,7 +98,7 @@
 
                 <ul class="submenu">
                     <li class="">
-                        <a class="popstyle" href="/sys/dept/dept.page" target="_blank">
+                        <a class="popstyle" href="${pageContext.request.contextPath}/pages/dept.jsp" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             用户管理
                         </a>

@@ -1,10 +1,13 @@
-package com.imooc.permission.common;
+package com.imooc.permission.common.config;
 
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -46,5 +49,11 @@ public class PermissionConfig extends WebMvcConfigurationSupport {
         internalResourceViewResolver.setPrefix(webMvcProperties.getView().getPrefix());
         internalResourceViewResolver.setSuffix(webMvcProperties.getView().getSuffix());
         return internalResourceViewResolver;
+    }
+
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        return paginationInterceptor;
     }
 }

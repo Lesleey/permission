@@ -10,14 +10,20 @@ import javax.servlet.http.HttpServletRequest;
  * @function
  */
 public class ContextUtil {
-    private static SysUser ANNO = null;
-    static {
-        ANNO = new SysUser();
-        ANNO.setId(-1);
-        ANNO.setUsername("anno");
-    }
+
+    private static final ThreadLocal<SysUser> userHolder = new ThreadLocal<>();
+
     public static SysUser loginUser(){
         HttpServletRequest request = RequestUtil.getRequest();
-        return null;
+        SysUser sysUser = userHolder.get();
+        return sysUser;
+    }
+
+    public static void  add(SysUser sysUser){
+        userHolder.set(sysUser);
+    }
+
+    public static void remove(){
+        userHolder.remove();
     }
 }

@@ -321,7 +321,7 @@
 
         function loadUserList(deptId) {
             var pageSize = $("#pageSize").val();
-            var url = "/sys/user/page.json?deptId=" + deptId;
+            var url = "/sys/user/page/" + deptId;
             var pageNo = $("#userPage .pageNo").val() || 1;
             $.ajax({
                 url : url,
@@ -336,10 +336,10 @@
         }
 
         function renderUserListAndPage(result, url) {
-            if (result.ret) {
+            if (result.code == 200) {
                 if (result.data.total > 0){
                     var rendered = Mustache.render(userListTemplate, {
-                        userList: result.data.data,
+                        userList: result.data.records,
                         "showDeptName": function() {
                             return deptMap[this.deptId].name;
                         },
@@ -361,7 +361,7 @@
                     });
                     $("#userList").html(rendered);
                     bindUserClick();
-                    $.each(result.data.data, function(i, user) {
+                    $.each(result.data.records, function(i, user) {
                         userMap[user.id] = user;
                     })
                 } else {
@@ -369,7 +369,7 @@
                 }
                 var pageSize = $("#pageSize").val();
                 var pageNo = $("#userPage .pageNo").val() || 1;
-                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "userPage", renderUserListAndPage);
+                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.records.length : 0, "userPage", renderUserListAndPage);
             } else {
                 showMessage("获取部门下用户列表", result.msg, false);
             }
@@ -389,7 +389,7 @@
                 buttons : {
                     "添加": function(e) {
                         e.preventDefault();
-                        updateUser(true, function (data) {
+                        addOrUpdateUser(true, function (data) {
                             $("#dialog-user-form").dialog("close");
                             loadUserList(lastClickDeptId);
                         }, function (data) {
@@ -403,7 +403,7 @@
             });
         });
         function bindUserClick() {
-            $(".user-acl").click(function (e) {
+            /*$(".user-acl").click(function (e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var userId = $(this).attr("data-id");
@@ -420,7 +420,7 @@
                         }
                     }
                 })
-            });
+            });*/
             $(".user-edit").click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -449,7 +449,7 @@
                     buttons : {
                         "更新": function(e) {
                             e.preventDefault();
-                            updateUser(false, function (data) {
+                            addOrUpdateUser(false, function (data) {
                                 $("#dialog-user-form").dialog("close");
                                 loadUserList(lastClickDeptId);
                             }, function (data) {
@@ -511,13 +511,13 @@
             }
         }
 
-        function updateUser(isCreate, successCallback, failCallback) {
+        function addOrUpdateUser(isCreate, successCallback, failCallback) {
             $.ajax({
-                url: isCreate ? "/sys/user/save.json" : "/sys/user/update.json",
+                url: isCreate ? "/sys/user/save" : "/sys/user/update",
                 data: $("#userForm").serializeArray(),
                 type: 'POST',
                 success: function(result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         loadDeptTree();
                         if (successCallback) {
                             successCallback(result);

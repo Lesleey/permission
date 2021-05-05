@@ -1,4 +1,4 @@
-package com.imooc.permission;
+package com.imooc.permission.common.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

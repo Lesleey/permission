@@ -1,7 +1,6 @@
 import com.imooc.permission.App;
-import com.imooc.permission.controller.SysDeptController;
-import com.imooc.permission.dao.SysUserMapper;
-import com.imooc.permission.entity.param.DeptParam;
+import com.imooc.permission.controller.SysUserController;
+import com.imooc.permission.entity.param.UserParam;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +16,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class SpringTest {
     @Autowired
-    private SysDeptController sysDeptController;
+    private SysUserController sysUserController;
 
     @Test
     public void test(){
-        DeptParam deptParam = new DeptParam();
-        deptParam.setId(5);
-        deptParam.setName("桌面部");
-        deptParam.setSeq(3);
-        deptParam.setParentId(0);
-        sysDeptController.update(deptParam);
+        UserParam userParam = new UserParam();
+        userParam.setDeptId(1);
+        userParam.setUsername("lesleey");
+        userParam.setMail("123@qq.com");
+        userParam.setTelephone("15035107458");
+        userParam.setPassword("123456");
+        userParam.setStatus("0");
+        sysUserController.saveUser(userParam);
+
     }
 
 }

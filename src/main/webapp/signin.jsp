@@ -1,5 +1,5 @@
 <%@ page import="java.net.URLEncoder" %>
-<%@ page import="org.apache.commons.lang3.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <html lang="zh-CN">
 <%
@@ -22,14 +22,14 @@
     <title>登陆</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/bootstrap3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="css/signin.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/css/signin.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="js/ie-emulation-modes-warning.js"></script>
+    <script src="${pageContext.request.contextPath}/js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -41,10 +41,10 @@
 <body>
 
 <div class="container">
-    <form class="form-signin" action="/login.page?ret=<%=ret%>" method="post">
+    <form class="form-signin" action="/user/login?ret=<%=ret%>" method="post">
         <h2 class="form-signin-heading">请登陆</h2>
         <label for="inputEmail" class="sr-only">邮箱/电话</label>
-        <input type="text" id="inputEmail" class="form-control" placeholder="Email/Telephone" name="username" required autofocus value="${username}">
+        <input type="text" id="inputEmail" class="form-control" placeholder="Email/Telephone" name="principal" required autofocus value="${username}">
         <label for="inputPassword" class="sr-only">密码</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required >
         <div class="checkbox" style="color: red;">${error}</div>

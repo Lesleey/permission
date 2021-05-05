@@ -24,7 +24,7 @@ public class UserParam implements Serializable {
     private String mail;
 
     @NotNull(message = "必须指定用户的部门!")
-    private  Integer deptId;
+    private Integer deptId;
 
     private String password;
 

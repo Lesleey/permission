@@ -12,7 +12,8 @@ spring:
     password: 123456
   mvc:
     view:
-      prefix: /WEB-INFO/
       suffix: .jsp
+      prefix: ""
 user:
   initPassword: 123456
+

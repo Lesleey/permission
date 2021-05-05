@@ -332,13 +332,13 @@
                     pageNo: pageNo
                 },
                 success: function (result) {
-                    renderUserListAndPage(result, url);
+                    renderUserListAndPage(result.data, url);
                 }
             })
         }
 
         function renderUserListAndPage(result, url) {
-            if (result.ret) {
+            if (result.code == 200) {
                 if (result.data.total > 0){
                     var rendered = Mustache.render(userListTemplate, {
                         userList: result.data.data,
