@@ -3,10 +3,10 @@
 <head>
     <title>角色</title>
     <jsp:include page="/common/backend_common.jsp" />
-    <link rel="stylesheet" href="/ztree/zTreeStyle.css" type="text/css">
-    <link rel="stylesheet" href="/assets/css/bootstrap-duallistbox.min.css" type="text/css">
-    <script type="text/javascript" src="/ztree/jquery.ztree.all.min.js"></script>
-    <script type="text/javascript" src="/assets/js/jquery.bootstrap-duallistbox.min.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/ztree/zTreeStyle.css" type="text/css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/bootstrap-duallistbox.min.css" type="text/css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/ztree/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/jquery.bootstrap-duallistbox.min.js"></script>
     <style type="text/css">
         .bootstrap-duallistbox-container .moveall, .bootstrap-duallistbox-container .removeall {
             width: 50%;
@@ -183,9 +183,9 @@
         
         function loadRoleList() {
             $.ajax({
-                url: "/sys/role/list.json",
+                url: "/sys/role/list",
                 success: function (result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         var rendered = Mustache.render(roleListTemplate, {roleList: result.data});
                         $("#roleList").html(rendered);
                         bindRoleClick();
@@ -220,7 +220,7 @@
                     buttons : {
                         "修改": function(e) {
                             e.preventDefault();
-                            updateRole(false, function (data) {
+                            addOrUpdateRole(false, function (data) {
                                 $("#dialog-role-form").dialog("close");
                             }, function (data) {
                                 showMessage("修改角色", data.msg, false);
@@ -231,6 +231,29 @@
                         }
                     }
                 })
+            });
+
+
+            $(".role-delete").click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var roleId = $(this).attr("data-id");
+                var roleName = $(this).attr("data-name");
+                var roleId = $(this).attr("data-id");
+                if (confirm("确定要删除角色[" + roleName + "]吗?")) {
+                    $.ajax({
+                        url: "/sys/role/delete/" + roleId,
+                        type: 'get',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                showMessage("删除角色[" + roleName + "]", "操作成功", true);
+                                loadRoleList();
+                            } else {
+                                showMessage("删除角色[" + roleName + "]", result.msg, false);
+                            }
+                        }
+                    });
+                }
             });
             $(".role-name").click(function (e) {
                e.preventDefault();
@@ -262,13 +285,9 @@
                 return;
             }
             $.ajax({
-                url: "/sys/role/roleTree.json",
-                data : {
-                    roleId: selectedRoleId
-                },
-                type: 'POST',
+                url: "/sys/role/roleTree/" + selectedRoleId,
                 success: function (result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         renderRoleTree(result.data);
                     } else {
                         showMessage("加载角色权限数据", result.msg, false);
@@ -355,7 +374,7 @@
                 buttons : {
                     "添加": function(e) {
                         e.preventDefault();
-                        updateRole(true, function (data) {
+                        addOrUpdateRole(true, function (data) {
                             $("#dialog-role-form").dialog("close");
                         }, function (data) {
                             showMessage("新增角色", data.msg, false);
@@ -375,14 +394,13 @@
                 return;
             }
             $.ajax({
-                url: "/sys/role/changeAcls.json",
+                url: "/sys/role/changeRoleAcl/" + lastRoleId,
                 data: {
-                    roleId: lastRoleId,
                     aclIds: getTreeSelectedId()
                 },
                 type: 'POST',
                 success: function (result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         showMessage("保存角色与权限点的关系", "操作成功", false);
                     } else {
                         showMessage("保存角色与权限点的关系", result.msg, false);
@@ -391,13 +409,13 @@
             });
         });
 
-        function updateRole(isCreate, successCallback, failCallback) {
+        function addOrUpdateRole(isCreate, successCallback, failCallback) {
             $.ajax({
-                url: isCreate ? "/sys/role/save.json" : "/sys/role/update.json",
+                url: isCreate ? "/sys/role/save" : "/sys/role/update",
                 data: $("#roleForm").serializeArray(),
                 type: 'POST',
                 success: function(result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         loadRoleList();
                         if (successCallback) {
                             successCallback(result);

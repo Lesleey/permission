@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.permission.dao.SysRoleMapper">
+
+    <select id="getRolesByUserId" resultType="com.imooc.permission.entity.SysRole">
+        SELECT role.* FROM SYS_ROLE role
+        INNER JOIN SYS_ROLE_USER    roleuser ON role.id = roleuser.role_id
+        INNER JON SYS_USER us on roleuser.user_id = us.id
+        WHERE us.id = #{userid}
+    </select>
+
+</mapper>

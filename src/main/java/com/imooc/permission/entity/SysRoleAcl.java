@@ -23,9 +23,9 @@ public class SysRoleAcl implements Serializable {
     @TableField
     private Integer roleId;
     @TableField
-    private String aclId;
+    private Integer aclId;
     @TableField
-    private String operate;
+    private String operator;
     @TableField
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date operateTime;

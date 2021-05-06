@@ -67,6 +67,9 @@ public class SysAclModuleController {
             BeanValidateUtil.validate(aclModuleParam);
             SysAclModule sysAclModule = SysAclModule.builder().id(aclModuleParam.getId()).name(aclModuleParam.getName()).parentId(aclModuleParam.getParentId()).seq(aclModuleParam.getSeq())
                     .remark(aclModuleParam.getRemark()).status(aclModuleParam.getStatus()).build();
+            sysAclModule.setOperateTime(new Date());
+            sysAclModule.setOperateIp(RequestUtil.getRemoteAddr());
+            sysAclModule.setOperator(ContextUtil.loginUser().getUsername());
             sysAclModuleService.updateSysAclModule(sysAclModule);
             return ResponseData.success(true);
         }catch (Exception e){
@@ -100,24 +103,8 @@ public class SysAclModuleController {
      * @return
      */
     @GetMapping("aclModuleTree")
-    public ResponseData<List<SysAclModuleDto>> deptTree(){
-        List<SysAclModule> list = sysAclModuleService.listOrderByLevelAndSn();
-        /*List<SysDept> list = sysDeptService.list(new QueryWrapper<SysDept>().lambda()
-                .orderByAsc(sysDept -> sysDept.getLevel().split(LevelUtil.SEPARATOR).length).orderByAsc(SysDept::getSeq));*/
-        List<SysAclModuleDto> rootList = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(list)) {
-            Map<Integer, SysAclModuleDto> treeMap = new HashMap<>();
-            list.forEach(sysAclModule -> {
-                SysAclModuleDto sysAclModuleDto = SysAclModuleDto.adapt(sysAclModule);
-                treeMap.put(sysAclModuleDto.getId(), sysAclModuleDto);
-                if(StringUtils.equalsIgnoreCase(sysAclModule.getLevel(), LevelUtil.ROOT))
-                    rootList.add(sysAclModuleDto);
-                else
-                    treeMap.get(sysAclModuleDto.getParentId()).getAclModuleList().add(sysAclModuleDto);
-            });
-
-        }
-        return ResponseData.success(rootList);
+    public ResponseData<List<SysAclModuleDto>> aclModuleTree(){
+        return ResponseData.success(sysAclModuleService.aclModuleTree());
 
     }
 }

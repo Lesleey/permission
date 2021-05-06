@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +19,9 @@ import java.util.Date;
  * @function
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("sys_role")
 public class SysRole  implements Serializable {
     @TableId(type = IdType.AUTO)
@@ -23,7 +29,7 @@ public class SysRole  implements Serializable {
     @TableField
     private String name;
     @TableField
-    private String status;
+    private Integer status;
     @TableField
     private String remark;
     @TableField

@@ -66,6 +66,9 @@ public class SysDeptController {
             validateDeptName(deptParam.getParentId(), deptParam.getName());
             SysDept sysDept = SysDept.builder().id(deptParam.getId()).name(deptParam.getName()).parentId(deptParam.getParentId())
                     .seq(deptParam.getSeq()).remark(deptParam.getRemark()).build();
+            sysDept.setOperateTime(new Date());
+            sysDept.setOperateIp(RequestUtil.getRemoteAddr());
+            sysDept.setOperator(ContextUtil.loginUser().getUsername());
             sysDeptService.updateSysDept(sysDept);
             return ResponseData.success(true);
         }catch (Exception e){

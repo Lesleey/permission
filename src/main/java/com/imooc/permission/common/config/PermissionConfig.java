@@ -35,6 +35,7 @@ public class PermissionConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/css/**").addResourceLocations("classpath:/WEB-INFO/css/");
         registry.addResourceHandler("/bootstrap3.3.5/**").addResourceLocations("classpath:/WEB-INFO/bootstrap3.3.5/");
         registry.addResourceHandler("/assets/**").addResourceLocations("classpath:/WEB-INFO/assets/");
+        registry.addResourceHandler("/ztree/**").addResourceLocations("classpath:/WEB-INFO/ztree/");
         registry.addResourceHandler("/**").addResourceLocations("classpath:/");
     }
 

@@ -18,6 +18,9 @@ public class SysAclModuleDto extends SysAclModule {
 
     private List<SysAclModuleDto> aclModuleList = new ArrayList<>(0);
 
+
+    private List<SysAclDto>  aclList = new ArrayList<>(0);
+
     public static SysAclModuleDto adapt(SysAclModule sysAclModule){
         SysAclModuleDto sysAclModuleDto = new SysAclModuleDto();
         BeanUtils.copyProperties(sysAclModule, sysAclModuleDto);

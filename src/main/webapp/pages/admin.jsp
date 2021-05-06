@@ -105,7 +105,7 @@
                         <b class="arrow"></b>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/role/role.page" target="_blank">
+                        <a class="popstyle" href="${pageContext.request.contextPath}/pages/role.jsp" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             角色管理
                         </a>
@@ -164,7 +164,7 @@
     </div>
 
     <div class="main-content">
-        <iframe id="innerFrame" src="/sys/dept/dept.page" width="99%" style="min-height: 768px;"></iframe>
+        <iframe id="innerFrame" src="${pageContext.request.contextPath}/pages/dept.jsp" width="99%" style="min-height: 768px;"></iframe>
     </div>
     <!-- /.main-content -->
 

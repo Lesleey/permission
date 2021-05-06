@@ -307,11 +307,11 @@
 
         function updateAcl(isCreate, successCallback, failCallback) {
             $.ajax({
-                url: isCreate ? "/sys/acl/save.json" : "/sys/acl/update.json",
+                url: isCreate ? "/sys/acl/save" : "/sys/acl/update",
                 data: $("#aclForm").serializeArray(),
                 type: 'POST',
                 success: function(result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         loadAclList(lastClickAclModuleId);
                         if (successCallback) {
                             successCallback(result);
@@ -462,7 +462,7 @@
 
         function loadAclList(aclModuleId) {
             var pageSize = $("#pageSize").val();
-            var url = "/sys/acl/page.json?aclModuleId=" + aclModuleId;
+            var url = "/sys/acl/page/" + aclModuleId;
             var pageNo = $("#aclPage .pageNo").val() || 1;
             $.ajax({
                 url : url,
@@ -477,10 +477,10 @@
         }
 
         function renderAclListAndPage(result, url) {
-            if(result.ret) {
+            if(result.code == 200) {
                 if (result.data.total > 0){
                     var rendered = Mustache.render(aclListTemplate, {
-                        aclList: result.data.data,
+                        aclList: result.data.records,
                         "showAclModuleName": function () {
                             return aclModuleMap[this.aclModuleId].name;
                         },
@@ -505,7 +505,7 @@
                     });
                     $("#aclList").html(rendered);
                     bindAclClick();
-                    $.each(result.data.data, function(i, acl) {
+                    $.each(result.data.records, function(i, acl) {
                         aclMap[acl.id] = acl;
                     })
                 } else {
@@ -513,7 +513,7 @@
                 }
                 var pageSize = $("#pageSize").val();
                 var pageNo = $("#aclPage .pageNo").val() || 1;
-                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "aclPage", renderAclListAndPage);
+                renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.records.length : 0, "aclPage", renderAclListAndPage);
             } else {
                 showMessage("获取权限点列表", result.msg, false);
             }

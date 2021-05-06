@@ -3,6 +3,7 @@ package com.imooc.permission.serivce;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.imooc.permission.entity.SysAcl;
 import com.imooc.permission.entity.SysAclModule;
+import com.imooc.permission.entity.dto.SysAclModuleDto;
 
 import java.util.List;
 
@@ -24,4 +25,10 @@ public interface SysAclModuleService extends IService<SysAclModule> {
      * @return
      */
     List<SysAclModule> listOrderByLevelAndSn();
+
+    /**
+     *  查询所有的权限模块树
+     * @return
+     */
+    List<SysAclModuleDto> aclModuleTree();
 }

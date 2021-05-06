@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,6 +18,9 @@ import java.util.Date;
  * @date 2021/5/3-17:34
  * @function
  */
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @TableName("sys_acl")
 public class SysAcl implements Serializable {
@@ -25,7 +31,7 @@ public class SysAcl implements Serializable {
     @TableField
     private String name;
     @TableField
-    private String aclModuleId;
+    private Integer aclModuleId;
     @TableField
     private String url;
     @TableField
@@ -33,7 +39,7 @@ public class SysAcl implements Serializable {
     @TableField
     private Integer seq;
     @TableField
-    private String status;
+    private Integer status;
     @TableField
     private String remark;
     @TableField

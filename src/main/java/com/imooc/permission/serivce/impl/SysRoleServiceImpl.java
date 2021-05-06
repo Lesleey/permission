@@ -10,6 +10,9 @@ import com.imooc.permission.serivce.SysRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Lesleey
  * @date 2021/5/3-18:00
@@ -19,4 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
  implements SysRoleService {
+    @Override
+    public List<SysRole> getRolesByUserId(Integer userid) {
+        List<SysRole> roles = baseMapper.getRolesByUserId(userid);
+        if(roles == null)
+            roles = Collections.emptyList();
+        return roles;
+    }
 }

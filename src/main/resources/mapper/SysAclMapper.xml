@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.permission.dao.SysAclMapper">
+
+    <select id="queryAclByRoleId" resultType="com.imooc.permission.entity.SysAcl">
+        <if test="roleIds == null or roleIds.size == 0">
+            SELECT acl.* FROM SYS_ACL acl where 1 = 2
+        </if>
+        <if test="roleIds != null and roleIds.size > 0">
+            SELECT distinct acl.* FROM SYS_ACL acl
+            INNER JOIN SYS_ROLE_ACL roleacl ON acl.id = roleacl.acl_id
+            INNER JOIN SYS_ROLE role ON roleacl.role_id = role.id
+            where role.id in
+            <foreach collection="roleIds" close=")" open="(" separator="," item="roleID">
+                #{roleID}
+            </foreach>
+        </if>
+
+
+    </select>
+
+</mapper>
