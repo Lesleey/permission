@@ -65,7 +65,6 @@ public class SysAclModuleController {
     public ResponseData<Boolean> update(AclModuleParam aclModuleParam){
         try{
             BeanValidateUtil.validate(aclModuleParam);
-            validateModuleName(aclModuleParam.getParentId(), aclModuleParam.getName());
             SysAclModule sysAclModule = SysAclModule.builder().id(aclModuleParam.getId()).name(aclModuleParam.getName()).parentId(aclModuleParam.getParentId()).seq(aclModuleParam.getSeq())
                     .remark(aclModuleParam.getRemark()).status(aclModuleParam.getStatus()).build();
             sysAclModuleService.updateSysAclModule(sysAclModule);
@@ -97,7 +96,7 @@ public class SysAclModuleController {
     }
 
     /**
-     *  查询部门树
+     *  查询权限模块树
      * @return
      */
     @GetMapping("aclModuleTree")
@@ -121,5 +120,4 @@ public class SysAclModuleController {
         return ResponseData.success(rootList);
 
     }
-
 }

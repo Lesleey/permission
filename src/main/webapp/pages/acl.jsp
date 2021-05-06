@@ -273,7 +273,7 @@
                 buttons : {
                     "添加": function(e) {
                         e.preventDefault();
-                        updateAclModule(true, function (data) {
+                        addOrUpdteAclModule(true, function (data) {
                             $("#dialog-aclModule-form").dialog("close");
                         }, function (data) {
                             showMessage("新增权限模块", data.msg, false);
@@ -285,13 +285,13 @@
                 }
             });
         });
-        function updateAclModule(isCreate, successCallback, failCallback) {
+        function addOrUpdteAclModule(isCreate, successCallback, failCallback) {
             $.ajax({
-                url: isCreate ? "/sys/aclModule/save.json" : "/sys/aclModule/update.json",
+                url: isCreate ? "/sys/aclModule/save" : "/sys/aclModule/update",
                 data: $("#aclModuleForm").serializeArray(),
                 type: 'POST',
                 success: function(result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         loadAclModuleTree();
                         if (successCallback) {
                             successCallback(result);
@@ -394,12 +394,9 @@
                 var aclModuleName = $(this).attr("data-name");
                 if (confirm("确定要删除权限模块[" + aclModuleName + "]吗?")) {
                     $.ajax({
-                        url: "/sys/aclModule/delete.json",
-                        data: {
-                            id: aclModuleId
-                        },
+                        url: "/sys/aclModule/delete/" + aclModuleId,
                         success: function (result) {
-                            if (result.ret) {
+                            if (result.code == 200) {
                                 showMessage("删除权限模块[" + aclModuleName + "]", "操作成功", true);
                                 loadAclModuleTree();
                             } else {
@@ -436,7 +433,7 @@
                     buttons : {
                         "更新": function(e) {
                             e.preventDefault();
-                            updateAclModule(false, function (data) {
+                            addOrUpdteAclModule(false, function (data) {
                                 $("#dialog-aclModule-form").dialog("close");
                             }, function (data) {
                                 showMessage("编辑权限模块", data.msg, false);
