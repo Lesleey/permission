@@ -444,13 +444,10 @@
 
         function loadRoleUser(selectedRoleId) {
             $.ajax({
-                url: "/sys/role/users.json",
-                data: {
-                    roleId: selectedRoleId
-                },
-                type: 'POST',
+                url: "/sys/role/roleUsers/" + selectedRoleId,
+                type: 'Get',
                 success: function (result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         var renderedSelect = Mustache.render(selectedUsersTemplate, {userList: result.data.selected});
                         var renderedUnSelect = Mustache.render(unSelectedUsersTemplate, {userList: result.data.unselected});
                         $("#roleUserList").html(renderedSelect + renderedUnSelect);
@@ -479,14 +476,13 @@
                 return;
             }
             $.ajax({
-                url: "/sys/role/changeUsers.json",
+                url: "/sys/role/changeRoleUsers/" + lastRoleId,
                 data: {
-                    roleId: lastRoleId,
                     userIds: $("#roleUserList").val() ? $("#roleUserList").val().join(",") : ''
                 },
                 type: 'POST',
                 success: function (result) {
-                    if (result.ret) {
+                    if (result.code == 200) {
                         showMessage("保存角色与用户的关系", "操作成功", false);
                     } else {
                         showMessage("保存角色与用户的关系", result.msg, false);

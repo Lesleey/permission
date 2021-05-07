@@ -16,4 +16,17 @@ spring:
       prefix: ""
 user:
   initPassword: 123456
+auth:
+  whiteList:
+    - ${auth.noAuthUrl}
+    - /user/login
+    - /js/**
+    - /css/**
+    - /bootstrap3.3.5/**
+    - /assets/**
+    - /ztree/**
+    - /signin.jsp
+    - /user/**
+    - /pages/noAuth.jsp
+  noAuthUrl: /pages/noAuth.jsp
 

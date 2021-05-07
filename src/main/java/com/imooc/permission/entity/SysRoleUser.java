@@ -23,7 +23,7 @@ public class SysRoleUser implements Serializable {
     @TableField
     private Integer roleId;
     @TableField
-    private String userId;
+    private Integer userId;
     @TableField
     private String operate;
     @TableField
@@ -31,4 +31,7 @@ public class SysRoleUser implements Serializable {
     private Date operateTime;
     @TableField
     private String operateIp;
+
+    @TableField
+    private String operator;
 }

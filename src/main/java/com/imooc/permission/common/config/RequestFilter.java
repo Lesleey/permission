@@ -3,6 +3,7 @@ package com.imooc.permission.common.config;
 import com.alibaba.druid.util.StringUtils;
 import com.imooc.permission.entity.SysUser;
 import com.imooc.permission.util.ContextUtil;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @function
  */
 @Component
+@Order(Integer.MIN_VALUE)
 public class RequestFilter implements Filter {
 
     private static final PathMatcher pathMatcher = new AntPathMatcher();

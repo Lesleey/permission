@@ -2,5 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.imooc.permission.dao.SysUserMapper">
 
+    <select id="listUserOrderByDeptSeqAndUserSeq" resultType="com.imooc.permission.entity.SysUser">
+        SELECT US.* FROM SYS_USER US
+        INNER JOIN SYS_DEPT DEPT ON US.DEPT_ID = DEPT.ID
+        ORDER BY  LENGTH(REPLACE(DEPT.LEVEL, '.', '')) ASC, DEPT.SEQ ASC, US.operate_time desc
+    </select>
 
+    <select id="getUsersByRoleId" resultType="com.imooc.permission.entity.SysUser">
+        select res.*  from
+        (
+            SELECT US.* FROM SYS_USER us
+            INNER JOIN SYS_ROLE_USER roleuser on us.id = roleuser.user_id
+            where roleuser.role_id = #{roleid}
+        ) res
+        INNER JOIN SYS_DEPT DEPT ON res.DEPT_ID = DEPT.ID
+        ORDER BY  LENGTH(REPLACE(DEPT.LEVEL, '.', '')) ASC, DEPT.SEQ ASC, res.operate_time desc
+    </select>
 </mapper>

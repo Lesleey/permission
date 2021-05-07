@@ -18,11 +18,17 @@ import java.util.List;
 @Mapper
 public interface SysUserMapper  extends BaseMapper<SysUser> {
 
+
     /**
-     *  分页查询用户信息
-     * @param userVoPage
-     * @param userParam
+     *  按照排序返回所有的用户数据
      * @return
      */
-    List<SysUserVo> listPage(Page<SysUserVo> userVoPage, @Param("param") UserParam userParam);
+    List<SysUser> listUserOrderByDeptSeqAndUserSeq();
+
+    /**
+     *   通过角色id 获取所有的用户信息
+     * @param roleId
+     * @return
+     */
+    List<SysUser> getUsersByRoleId(Integer roleId);
 }

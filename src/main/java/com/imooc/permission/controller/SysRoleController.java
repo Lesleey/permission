@@ -4,13 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.imooc.permission.common.ResponseData;
 import com.imooc.permission.entity.SysAcl;
 import com.imooc.permission.entity.SysRole;
+import com.imooc.permission.entity.SysUser;
 import com.imooc.permission.entity.dto.SysAclDto;
 import com.imooc.permission.entity.dto.SysAclModuleDto;
 import com.imooc.permission.entity.param.RoleParam;
-import com.imooc.permission.serivce.SysAclModuleService;
-import com.imooc.permission.serivce.SysAclService;
-import com.imooc.permission.serivce.SysRoleAclService;
-import com.imooc.permission.serivce.SysRoleService;
+import com.imooc.permission.serivce.*;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.RequestUtil;
@@ -39,6 +37,10 @@ public class SysRoleController {
     private SysAclModuleService sysAclModuleService;
     @Autowired
     private SysRoleAclService sysRoleAclService;
+    @Autowired
+    private SysUserService sysUserService;
+    @Autowired
+    private SysRoleUserService sysRoleUserService;
 
     @GetMapping("list")
     public ResponseData<List<SysRole>> list(){
@@ -170,4 +172,42 @@ public class SysRoleController {
         String[] split = StringUtils.split(str, ",");
         return Arrays.stream(split).map(Integer::new).collect(Collectors.toList());
     }
+
+    /**
+     *  查询角色和用户的对应关系
+     * @param roleId
+     * @return
+     */
+    @GetMapping("roleUsers/{roleId}")
+    public ResponseData<?> roleUsersMap(@PathVariable Integer roleId){
+        try{
+            List<SysUser> selectedList = sysUserService.getUsersByRoleId(roleId);
+            List<SysUser> allUsers = sysUserService.listUserOrderByDeptSeqAndUserSeq();
+            List<SysUser> unselectedList = allUsers.stream().filter(sysUser -> !selectedList.contains(sysUser)).collect(Collectors.toList());
+            Map<String, List<SysUser>> res = new HashMap<>();
+            res.put("selected", selectedList);
+            res.put("unselected", unselectedList);
+            return ResponseData.success(res);
+        }catch (Exception e){
+            return ResponseData.error(e.getMessage());
+        }
+    }
+
+    /**
+     *  修改角色和用户的对应关系
+     * @param roleId
+     * @return
+     */
+    @PostMapping("/changeRoleUsers/{roleId}")
+    public ResponseData<Boolean> changeRoleUSERS(@PathVariable Integer roleId ,String userIds){
+        try{
+            if(!sysRoleUserService.isHasRole(roleId, ContextUtil.loginUser().getId()))
+                throw new RuntimeException("对不起，您没有该权限！");
+            sysRoleUserService.changeRoleUsers(splitAclIds(userIds), roleId);
+            return ResponseData.success(true);
+        }catch (Exception e){
+            return ResponseData.error(e.getMessage());
+        }
+    }
+
 }

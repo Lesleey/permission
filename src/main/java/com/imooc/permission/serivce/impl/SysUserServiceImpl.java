@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,5 +42,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Page<SysUser> resPage = baseMapper.selectPage(new Page<SysUser>(pageNo, pageSize), new QueryWrapper<SysUser>().lambda()
                 .eq(SysUser::getDeptId, deptId));
         return resPage;
+    }
+
+    @Override
+    public List<SysUser> listUserOrderByDeptSeqAndUserSeq() {
+        List<SysUser> users = baseMapper.listUserOrderByDeptSeqAndUserSeq();
+        if(users == null)
+            users = Collections.emptyList();
+        return users;
+    }
+
+    @Override
+    public List<SysUser> getUsersByRoleId(Integer roleId) {
+        List<SysUser> users = baseMapper.getUsersByRoleId(roleId);
+        if(users == null)
+            users = Collections.emptyList();
+        return users;
     }
 }
