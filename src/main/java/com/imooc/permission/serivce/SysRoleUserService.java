@@ -34,4 +34,20 @@ public interface SysRoleUserService extends IService<SysRoleUser> {
      * @return
      */
     boolean isHasRole(Integer roleId, Integer userId);
+
+    /**
+     *  删除用户对应的角色信息
+     * @param userid
+     * @return
+     */
+    boolean removeByUserId(Integer userid);
+
+    /**
+     *  回退操作
+     * @param userid
+     * @param before
+     * @param after
+     * @return
+     */
+    boolean recover(int userid, List<SysRoleUser> before, List<SysRoleUser> after);
 }

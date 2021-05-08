@@ -10,6 +10,7 @@ import com.imooc.permission.entity.param.AclParam;
 import com.imooc.permission.entity.param.UserParam;
 import com.imooc.permission.serivce.SysAclModuleService;
 import com.imooc.permission.serivce.SysAclService;
+import com.imooc.permission.serivce.SysLogService;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.RequestUtil;
@@ -33,6 +34,8 @@ public class SysAclController {
     private SysAclService sysAclService;
     @Autowired
     private SysAclModuleService sysAclModuleService;
+    @Autowired
+    private SysLogService sysLogService;
 
     /**
      *  分页查询权限
@@ -71,6 +74,7 @@ public class SysAclController {
             sysAcl.setOperateIp(RequestUtil.getRemoteAddr());
             sysAcl.setOperator(ContextUtil.loginUser().getUsername());
             sysAclService.save(sysAcl);
+            sysLogService.saveAclLog(null, sysAcl);
             return ResponseData.success(true);
         }catch (Exception e){
             return ResponseData.error(e.getMessage());
@@ -96,6 +100,7 @@ public class SysAclController {
             sysAcl.setOperateIp(RequestUtil.getRemoteAddr());
             sysAcl.setOperator(ContextUtil.loginUser().getUsername());
             sysAcl.setCode(System.currentTimeMillis() + "_" + ContextUtil.loginUser().getId());
+            sysLogService.saveAclLog(sysAclService.getById(aclParam.getId()), sysAcl);
             sysAclService.updateById(sysAcl);
             return ResponseData.success(true);
         }catch (Exception e){

@@ -29,7 +29,7 @@ public class SysLog implements Serializable {
     @TableField
     private String newValue;
     @TableField
-    private String status;
+    private Integer status;
     @TableField
     private String operator;
     @JsonFormat(pattern = "yyyy-MM-dd")

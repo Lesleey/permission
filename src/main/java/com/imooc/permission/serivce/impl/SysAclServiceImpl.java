@@ -36,6 +36,8 @@ public class SysAclServiceImpl extends ServiceImpl<SysAclMapper, SysAcl>
 
     @Autowired
     private SysRoleService sysRoleService;
+    @Autowired
+    private SysAclModuleService sysAclModuleService;
 
     @Override
     public Integer removeAclByAclModuleId(Integer aclModuleId) {
@@ -81,4 +83,30 @@ public class SysAclServiceImpl extends ServiceImpl<SysAclMapper, SysAcl>
         return sysAcls;
     }
 
+    @Override
+    public Integer recover(SysAcl before, SysAcl after) {
+        if(before == null)
+            removeById(after.getId());
+        else if(after == null){
+            validAclModuleAndAclName(before.getAclModuleId(), before.getName());
+            save(before);
+        }else{
+            updateById(before);
+        }
+        return null;
+    }
+
+    @Override
+    public int countByAclModuleId(Integer id) {
+        return baseMapper.selectCount(new QueryWrapper<SysAcl>().lambda().eq(SysAcl::getAclModuleId, id));
+    }
+
+    private void validAclModuleAndAclName(Integer aclModuleId, String aclName){
+        if(sysAclModuleService.getById(aclModuleId) == null)
+            throw new RuntimeException("权限模块已被移除，无法进行回退操作！");
+        if(count(new QueryWrapper<SysAcl>().lambda()
+                .eq(SysAcl::getAclModuleId, aclModuleId).eq(SysAcl::getName, aclName)) > 0)
+            throw new RuntimeException("权限模块下已经存在相同名称的权限，无法进行回退操作！");
+
+    }
 }

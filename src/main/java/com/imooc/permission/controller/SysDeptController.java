@@ -7,6 +7,7 @@ import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.entity.dto.SysDeptDto;
 import com.imooc.permission.entity.param.DeptParam;
 import com.imooc.permission.serivce.SysDeptService;
+import com.imooc.permission.serivce.SysLogService;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
@@ -28,6 +29,8 @@ import java.util.*;
 public class SysDeptController {
     @Autowired
     private SysDeptService sysDeptService;
+    @Autowired
+    private SysLogService sysLogService;
 
     /**
      *  新增部门
@@ -48,8 +51,8 @@ public class SysDeptController {
         sysDept.setOperateTime(new Date());
         sysDept.setOperateIp(RequestUtil.getRemoteAddr());
         sysDept.setOperator(ContextUtil.loginUser().getUsername());
-        //todo 操作人
         sysDeptService.save(sysDept);
+        sysLogService.saveDeptLog(null, sysDept);
         return ResponseData.success(true);
     }
 
@@ -69,6 +72,7 @@ public class SysDeptController {
             sysDept.setOperateTime(new Date());
             sysDept.setOperateIp(RequestUtil.getRemoteAddr());
             sysDept.setOperator(ContextUtil.loginUser().getUsername());
+            sysLogService.saveDeptLog(sysDeptService.getById(deptParam.getId()), sysDept);
             sysDeptService.updateSysDept(sysDept);
             return ResponseData.success(true);
         }catch (Exception e){

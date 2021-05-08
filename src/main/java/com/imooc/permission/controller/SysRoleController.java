@@ -41,6 +41,8 @@ public class SysRoleController {
     private SysUserService sysUserService;
     @Autowired
     private SysRoleUserService sysRoleUserService;
+    @Autowired
+    private SysLogService sysLogService;
 
     @GetMapping("list")
     public ResponseData<List<SysRole>> list(){
@@ -63,6 +65,7 @@ public class SysRoleController {
             sysRole.setOperateIp(RequestUtil.getRemoteAddr());
             sysRole.setOperator(ContextUtil.loginUser().getUsername());
             sysRoleService.save(sysRole);
+            sysLogService.saveRole(null, sysRole);
             return ResponseData.success(true);
         }catch (Exception e){
             return ResponseData.error(e.getMessage());
@@ -85,6 +88,7 @@ public class SysRoleController {
             sysRole.setOperateTime(new Date());
             sysRole.setOperateIp(RequestUtil.getRemoteAddr());
             sysRole.setOperator(ContextUtil.loginUser().getUsername());
+            sysLogService.saveRole(sysRoleService.getById(roleParam.getId()), sysRole);
             sysRoleService.updateById(sysRole);
             return ResponseData.success(true);
         }catch (Exception e){

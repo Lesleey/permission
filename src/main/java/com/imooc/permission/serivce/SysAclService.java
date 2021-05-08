@@ -50,6 +50,19 @@ public interface SysAclService extends IService<SysAcl> {
      */
     List<SysAcl> listAclsByModuleId(Integer aclModuleId);
 
+    /**
+     *  回退操作
+     * @param before
+     * @param after
+     * @return
+     */
+    Integer recover(SysAcl before, SysAcl after);
 
 
+    /**
+     *  查询该权限模块下具有的权限数量
+     * @param id
+     * @return
+     */
+    int countByAclModuleId(Integer id);
 }

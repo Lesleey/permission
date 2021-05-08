@@ -32,4 +32,19 @@ public interface SysDeptService extends IService<SysDept> {
      * @return
      */
     List<SysDept> listOrderByLevelAndSn();
+
+    /**
+     *  回退操作
+     * @param before
+     * @param after
+     * @return
+     */
+    Integer recover(SysDept before, SysDept after);
+
+    /**
+     *  查询该部门下的子部门数量
+     * @param parentid
+     * @return
+     */
+    Integer countByParentId(Integer parentid);
 }

@@ -119,7 +119,7 @@
                         <b class="arrow"></b>
                     </li>
                     <li class="">
-                        <a class="popstyle" href="/sys/log/log.page" target="_blank">
+                        <a class="popstyle" href="${pageContext.request.contextPath}/pages/log.jsp" target="_blank">
                             <i class="menu-icon fa fa-caret-right"></i>
                             权限更新记录
                         </a>

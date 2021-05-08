@@ -31,4 +31,19 @@ public interface SysAclModuleService extends IService<SysAclModule> {
      * @return
      */
     List<SysAclModuleDto> aclModuleTree();
+
+    /**
+     *  回退操作
+     * @param before
+     * @param after
+     * @return
+     */
+    Integer recover(SysAclModule before, SysAclModule after);
+
+    /**
+     *  查询父权限模块下的子模块的数量
+     * @param parentid
+     * @return
+     */
+    Integer countByParentId(Integer parentid);
 }

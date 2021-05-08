@@ -20,4 +20,18 @@ public interface SysRoleService extends IService<SysRole> {
     List<SysRole> getRolesByUserId(Integer userid);
 
 
+    /**
+     *  回退操作
+     * @param before
+     * @param after
+     * @return
+     */
+    Integer recover(SysRole before, SysRole after);
+
+    /**
+     *  通过角色id删除对应的信息
+     * @param roleId
+     * @return
+     */
+    Integer removeRoleById(Integer roleId);
 }

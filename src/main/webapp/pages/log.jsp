@@ -124,7 +124,7 @@
             function loadLogList() {
                 var pageSize = $("#pageSize").val();
                 var pageNo = $("#logPage .pageNo").val() || 1;
-                var url = "/sys/log/page.json";
+                var url = "/sys/log/page";
                 var beforeSeg = $("#search-before").val();
                 var afterSeg = $("#search-after").val();
                 var operator = $("#search-operator").val();
@@ -132,10 +132,8 @@
                 var toTime = $("#search-to").val();
                 var type = $("#search-type").val();
                 $.ajax({
-                    url: url,
+                    url: url + "/" + pageNo + "/" + pageSize,
                     data: {
-                        pageNo: pageNo,
-                        pageSize: pageSize,
                         beforeSeg: beforeSeg,
                         afterSeg : afterSeg,
                         operator : operator,
@@ -151,10 +149,10 @@
             }
 
             function renderLogListAndPage(result, url) {
-                if (result.ret) {
+                if (result.code == 200) {
                     if (result.data.total > 0) {
                         var rendered = Mustache.render(logListTemplate, {
-                            "logList": result.data.data,
+                            "logList": result.data.records,
                             "showType": function () {
                                 return function (text, render) {
                                     var typeStr = "";
@@ -188,7 +186,7 @@
                             }
                         });
                         $('#logList').html(rendered);
-                        $.each(result.data.data, function (i, log) {
+                        $.each(result.data.records, function (i, log) {
                             logMap[log.id] = log;
                         });
                     } else {
@@ -197,7 +195,7 @@
                     bindLogClick();
                     var pageSize = $("#pageSize").val();
                     var pageNo = $("#logPage .pageNo").val() || 1;
-                    renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.data.length : 0, "logPage", renderLogListAndPage);
+                    renderPage(url, result.data.total, pageNo, pageSize, result.data.total > 0 ? result.data.records.length : 0, "logPage", renderLogListAndPage);
                 } else {
                     showMessage("获取权限操作历史列表", result.msg, false);
                 }
@@ -210,12 +208,9 @@
                     console.log(logId);
                     if (confirm("确定要还原这个操作吗?")) {
                         $.ajax({
-                            url: "/sys/log/recover.json",
-                            data: {
-                                id: logId
-                            },
+                            url: "/sys/log/recover/" + logId,
                             success: function (result) {
-                                if (result.ret) {
+                                if (result.code == 200) {
                                     showMessage("还原历史记录", "操作成功", true);
                                     loadLogList();
                                 } else {

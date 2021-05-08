@@ -9,10 +9,12 @@ import com.imooc.permission.entity.SysAcl;
 import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.serivce.SysAclService;
 import com.imooc.permission.serivce.SysDeptService;
+import com.imooc.permission.serivce.SysUserService;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
 import com.imooc.permission.util.RequestUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,9 @@ import java.util.List;
 @Transactional
 public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
  implements SysDeptService {
+    @Autowired
+    private SysUserService sysUserService;
+
     @Override
     public boolean updateSysDept(SysDept sysDept) {
         SysDept oldDept = baseMapper.selectById(sysDept.getId());
@@ -63,6 +68,33 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
         return sysDepts;
     }
 
+    @Override
+    public Integer recover(SysDept before, SysDept after) {
+        if(before == null){
+            if(sysUserService.countByDeptId(after.getId()) > 0)
+                throw new RuntimeException("该部门下已存在用户，请先删除用户在进行回退操作！");
+            if(countByParentId(after.getId()) > 0)
+                throw new RuntimeException("该部门下已存在子部门，请先移除子部门在进行回退操作！");
+            removeById(after.getId());
+        }else if(after == null){
+            if(before.getParentId() != 0 &&  getById(before.getParentId()) == null)
+                throw new RuntimeException("父部门已被移除，无法进行回退操作！");
+            validateDeptName(before.getParentId(), before.getName());
+            save(before);
+        }else{
+            if(before.getParentId() != 0 && getById(before.getParentId()) == null)
+                throw new RuntimeException("父部门已被移除，无法进行回退操作！");
+            validateDeptName(before.getParentId(), before.getName());
+            updateById(before);
+        }
+        return null;
+    }
+
+    @Override
+    public Integer countByParentId(Integer parentid) {
+        return baseMapper.selectCount(new QueryWrapper<SysDept>().lambda().eq(SysDept::getParentId, parentid));
+    }
+
     /**
      *  更新所有孩子节点的 level
      * @param parentLevel
@@ -86,6 +118,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept>
      */
     private void updateAllSonLevelByLevel(String beforeLevel, String afterLevel){
         baseMapper.updateAllSonLevelByLevel(beforeLevel, afterLevel);
+    }
+
+    private void validateDeptName(Integer parentId, String deptName){
+        if(count(new QueryWrapper<SysDept>().lambda()
+                .eq(SysDept::getParentId, parentId).eq(SysDept::getName, deptName)) > 0 )
+            throw new RuntimeException(String.format("该部门下已存在名称为%s的部门!", deptName));
     }
 
 }

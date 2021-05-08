@@ -10,6 +10,7 @@ import com.imooc.permission.entity.dto.SysDeptDto;
 import com.imooc.permission.entity.param.AclModuleParam;
 import com.imooc.permission.entity.param.DeptParam;
 import com.imooc.permission.serivce.SysAclModuleService;
+import com.imooc.permission.serivce.SysLogService;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
@@ -30,6 +31,9 @@ import java.util.*;
 public class SysAclModuleController {
     @Autowired
     private SysAclModuleService sysAclModuleService;
+    @Autowired
+    private SysLogService sysLogService;
+
     /**
      *  新增权限模块
      * @param aclModuleParam
@@ -51,6 +55,7 @@ public class SysAclModuleController {
         sysAclModule.setOperateIp(RequestUtil.getRemoteAddr());
         sysAclModule.setOperator(ContextUtil.loginUser().getUsername());
         sysAclModuleService.save(sysAclModule);
+        sysLogService.saveAclModule(null, sysAclModule);
         return ResponseData.success(true);
     }
 

@@ -42,4 +42,19 @@ public interface SysUserService extends IService<SysUser> {
      * @return
      */
     List<SysUser> getUsersByRoleId(Integer roleId);
+
+    /**
+     *  回退操作
+     * @param before
+     * @param after
+     * @return
+     */
+    Integer recover(SysUser before ,SysUser after);
+
+    /**
+     *  查询该部门下的人员数量
+     * @param deptid
+     * @return
+     */
+    Integer countByDeptId(Integer deptid);
 }

@@ -8,6 +8,7 @@ import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.entity.SysUser;
 import com.imooc.permission.entity.param.UserParam;
 import com.imooc.permission.serivce.SysDeptService;
+import com.imooc.permission.serivce.SysLogService;
 import com.imooc.permission.serivce.SysUserService;
 import com.imooc.permission.util.BeanValidateUtil;
 import com.imooc.permission.util.ContextUtil;
@@ -36,6 +37,8 @@ public class SysUserController {
 
     @Autowired
     private SysDeptService sysDeptService;
+    @Autowired
+    private SysLogService sysLogService;
 
 
     @GetMapping("/page/{deptId}")
@@ -68,6 +71,7 @@ public class SysUserController {
             sysUser.setOperateIp(RequestUtil.getRemoteAddr());
             sysUser.setOperator(ContextUtil.loginUser().getUsername());
             sysUserService.save(sysUser);
+            sysLogService.saveUserLog(null, sysUser);
             return  ResponseData.success(true);
         }catch (Exception e){
             return ResponseData.error(e.getMessage());
@@ -84,8 +88,6 @@ public class SysUserController {
     public ResponseData<Boolean> updateUser(UserParam userParam){
         try{
             BeanValidateUtil.validate(userParam);
-            validEmailExist(userParam.getMail());
-            validTeleExist(userParam.getTelephone());
             validDeptExist(userParam.getDeptId());
             SysUser sysUser = SysUser.builder().id(userParam.getId()).deptId(userParam.getDeptId()).mail(userParam.getMail())
                     .username(userParam.getUsername()).password(Md5Crypt.md5Crypt(userParam.getPassword().getBytes())).remark(userParam.getRemark())
@@ -94,6 +96,7 @@ public class SysUserController {
             sysUser.setOperateTime(new Date());
             sysUser.setOperateIp(RequestUtil.getRemoteAddr());
             sysUser.setOperator(ContextUtil.loginUser().getUsername());
+            sysLogService.saveUserLog(sysUserService.getById(userParam.getId()), sysUser);
             sysUserService.updateById(sysUser);
             return  ResponseData.success(true);
         }catch (Exception e){

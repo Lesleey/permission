@@ -1,16 +1,20 @@
 package com.imooc.permission.serivce.impl;
 
 import com.alibaba.druid.util.StringUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.imooc.permission.dao.SysAclModuleMapper;
 import com.imooc.permission.entity.SysAclModule;
 import com.imooc.permission.entity.SysDept;
 import com.imooc.permission.entity.dto.SysAclModuleDto;
 import com.imooc.permission.serivce.SysAclModuleService;
+import com.imooc.permission.serivce.SysAclService;
+import com.imooc.permission.serivce.SysLogService;
 import com.imooc.permission.util.ContextUtil;
 import com.imooc.permission.util.LevelUtil;
 import com.imooc.permission.util.RequestUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,12 @@ import java.util.*;
 @Transactional
 public class SysAclModuleServiceImpl  extends ServiceImpl<SysAclModuleMapper, SysAclModule>
  implements SysAclModuleService {
+    @Autowired
+    private SysLogService sysLogService;
+    @Autowired
+    private SysAclService sysAclService;
+
+
     @Override
     public boolean updateSysAclModule(SysAclModule sysAclModule) {
         SysAclModule oldAclModule = baseMapper.selectById(sysAclModule.getId());
@@ -43,6 +53,7 @@ public class SysAclModuleServiceImpl  extends ServiceImpl<SysAclModuleMapper, Sy
         sysAclModule.setOperateTime(new Date());
         sysAclModule.setOperateIp(RequestUtil.getRemoteAddr());
         sysAclModule.setOperator(ContextUtil.loginUser().getUsername());
+        sysLogService.saveAclModule(oldAclModule, sysAclModule);
         return updateById(sysAclModule);
     }
 
@@ -79,5 +90,38 @@ public class SysAclModuleServiceImpl  extends ServiceImpl<SysAclModuleMapper, Sy
      */
     private void updateAllSonLevelByLevel(String beforeLevel, String afterLevel) {
         baseMapper.updateAllSonLevelByLevel(beforeLevel, afterLevel);
+    }
+
+    @Override
+    public Integer recover(SysAclModule before, SysAclModule after) {
+        if(before == null){
+            if(sysAclService.countByAclModuleId(after.getId()) > 0)
+                throw new RuntimeException("该权限模块下下已存在权限，请先删除权限在进行回退操作！");
+            if(countByParentId(after.getId()) > 0)
+                throw new RuntimeException("该权限模块下已存在子模块，请先移除子模块在进行回退操作！");
+            removeById(after.getId());
+        }else if(after == null){
+            if(getById(before.getParentId()) == null)
+                throw new RuntimeException("父部门已被移除，无法进行回退操作！");
+            validateAclModuleName(before.getParentId(), before.getName());
+            save(before);
+        }else{
+            if(getById(before.getParentId()) == null)
+                throw new RuntimeException("父部门已被移除，无法进行回退操作！");
+            validateAclModuleName(before.getParentId(), before.getName());
+            updateById(before);
+        }
+        return null;
+    }
+
+    private void validateAclModuleName(Integer parentId, String name) {
+        if( count(new QueryWrapper<SysAclModule>().lambda()
+                .eq(SysAclModule::getParentId, parentId).eq(SysAclModule::getName, name)) > 0)
+            throw  new RuntimeException("该模快下已存在相同名称的权限模块, 无法进行回退操作");
+    }
+
+    @Override
+    public Integer countByParentId(Integer parentid) {
+        return count(new QueryWrapper<SysAclModule>().lambda().eq(SysAclModule::getParentId, parentid));
     }
 }
